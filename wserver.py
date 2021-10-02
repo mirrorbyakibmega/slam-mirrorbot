@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # (c) YashDK [yash-dk@github]
+# Redesigned By - @bipuldey19 (https://github.com/SlamDevs/slam-mirrorbot/commit/1e572f4fa3625ecceb953ce6d3e7cf7334a4d542#diff-c3d91f56f4c5d8b5af3d856d15a76bd5f00aa38d712691b91501734940761bdd)
 
 import os
 import time
@@ -9,6 +10,10 @@ import asyncio
 
 from aiohttp import web
 import nodes
+
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    handlers=[logging.FileHandler('log.txt'), logging.StreamHandler()],
+                    level=logging.INFO)
 
 LOGGER = logging.getLogger(__name__)
 
@@ -21,7 +26,7 @@ page = """
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Torrent File Selector</title>
-    <link rel="icon" href="https://telegra.ph/file/6507910fd06d18dfaba82.jpg" type="image/jpg">
+    <link rel="icon" href="https://telegra.ph/file/a97fb49ff2498018a59a7.png" type="image/jpg">
     <script
       src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
       integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs="
@@ -197,7 +202,7 @@ input[type="submit"]:hover, input[type="submit"]:focus{
     <header>
       <div class="brand">
         <img
-          src="https://telegra.ph/file/6507910fd06d18dfaba82.jpg"
+          src="https://telegra.ph/file/a97fb49ff2498018a59a7.png"
           alt="logo"
         />
         <a href="https://t.me/SlamMirrorUpdates"> 
@@ -522,7 +527,7 @@ section span{
     <header>
       <div class="brand">
         <img
-          src="https://telegra.ph/file/6507910fd06d18dfaba82.jpg"
+          src="https://telegra.ph/file/a97fb49ff2498018a59a7.png"
           alt="logo"
         />
         <a href="https://t.me/SlamMirrorUpdates">
@@ -626,7 +631,7 @@ async def re_verfiy(paused, resumed, client, torr):
 
         if verify:
             break
-        LOGGER.error("Reverification Failed, correcting stuff...")
+        LOGGER.info("Reverification Failed: correcting stuff...")
         client.auth_log_out()
         client = qba.Client(host="localhost", port="8090",
                            username="admin", password="adminadmin")
@@ -645,6 +650,7 @@ async def re_verfiy(paused, resumed, client, torr):
         k += 1
         if k > 4:
             return False
+    LOGGER.info("Verified")
     return True
 
 
@@ -691,7 +697,7 @@ async def set_priority(request):
 
     await asyncio.sleep(2)
     if not await re_verfiy(pause, resume, client, torr):
-        LOGGER.error("The Torrent choose errored reverification failed")
+        LOGGER.error("Verification Failed")
     client.auth_log_out()
     return await list_torrent_contents(request)
 
@@ -725,7 +731,7 @@ async def start_server():
     return app
 
 
-async def start_server_async(port=8080):
+async def start_server_async(port=80):
 
     app = web.Application(middlewares=[e404_middleware])
     app.add_routes(routes)
